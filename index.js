@@ -11,6 +11,12 @@ app.use(morgan('dev'));
 app.use(globalMiddleware);
 app.use(require("./routes"));
 
+app.use((req, res, next) => {
+  const error = new Error("404 Resource Not Found");
+  error.status = 404;
+  next(error);
+})
+
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 })
