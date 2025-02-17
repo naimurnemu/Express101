@@ -12,9 +12,18 @@ app.use(globalMiddleware);
 app.use(require("./routes"));
 
 app.use((req, res, next) => {
-  const error = new Error("404 Resource Not Found");
+  const error = new Error("Resource Not Found");
   error.status = 404;
   next(error);
+})
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  if (error.status) {
+    return res.status(error.status).send(`<h2>${error.message}</h2>`);
+  }
+
+  res.status(500).send("<h2>Something went wrong</h2>");
 })
 
 app.listen(5000, () => {
