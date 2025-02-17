@@ -4,13 +4,16 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const app = express();
+const router = express.Router();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(globalMiddleware);
+app.use(router);
 
-app.get("/", cors(), (req, res) => {
+router.get("/", cors(), (req, res) => {
   fs.readFile("./pages/index.html", (err, data) => {
     if (err) {
       res.send(`
@@ -24,7 +27,7 @@ app.get("/", cors(), (req, res) => {
 
 });
 
-app.get("/about", localMiddleware, (req, res) => {
+router.get("/about", localMiddleware, (req, res) => {
   fs.readFile("./pages/about.html", (err, data) => {
     if (err) {
       res.send(`<h2>This is Something Wrong in About</h2>`)
@@ -36,7 +39,7 @@ app.get("/about", localMiddleware, (req, res) => {
 
 });
 
-app.get("/help", (req, res) => {
+router.get("/help", (req, res) => {
   fs.readFile("./pages/help.html", (err, data) => {
     if (err) {
       res.send(`
