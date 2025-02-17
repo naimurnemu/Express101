@@ -1,9 +1,15 @@
 const express = require("express");
 const fs = require("fs");
+const cors = require("cors");
+const morgan = require("morgan");
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan('dev'));
 
-app.get("/", (req, res) => {
+app.get("/", cors(),(req,  res) => {
   fs.readFile("./pages/index.html", (err, data) => {
     if (err) {
       res.send(`
@@ -17,7 +23,7 @@ app.get("/", (req, res) => {
 
 });
 
-app.get("/about", (req, res) => {
+app.get("/about", [cors(), morgan('dev')], (req, res) => {
   fs.readFile("./pages/about.html", (err, data) => {
     if (err) {
       res.send(`<h2>This is Something Wrong in About</h2>`)
