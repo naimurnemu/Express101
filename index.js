@@ -1,5 +1,4 @@
 const express = require("express");
-const fs = require("fs");
 const cors = require("cors");
 const morgan = require("morgan");
 
@@ -24,11 +23,6 @@ function globalMiddleware(req, res, next) {
     return res.status(400).send("<h2>This is a Bad Request</h2>")
   }
 
-  next();
-}
-
-function localMiddleware(req, res, next) {
-  console.log("This is a Local Middleware");
   next();
 }
 
