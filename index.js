@@ -8,8 +8,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
+app.use(globalMiddleware);
 
-app.get("/", cors(),(req,  res) => {
+app.get("/", cors(), (req, res) => {
   fs.readFile("./pages/index.html", (err, data) => {
     if (err) {
       res.send(`
@@ -23,7 +24,7 @@ app.get("/", cors(),(req,  res) => {
 
 });
 
-app.get("/about", [cors(), morgan('dev')], (req, res) => {
+app.get("/about", localMiddleware, (req, res) => {
   fs.readFile("./pages/about.html", (err, data) => {
     if (err) {
       res.send(`<h2>This is Something Wrong in About</h2>`)
@@ -52,3 +53,20 @@ app.get("/help", (req, res) => {
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 })
+
+function globalMiddleware(req, res, next) {
+  console.log("This is a Global Middleware");
+  console.log(`Request Method: ${req.method} and URL: ${req.url}`);
+
+  if (req.query.bad) {
+    return res.status(400).send("<h2>This is a Bad Request</h2>")
+  }
+
+  next();
+}
+
+function localMiddleware(req, res, next) {
+  console.log("This is a Local Middleware");
+  next();
+}
+
